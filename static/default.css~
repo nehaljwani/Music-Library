@@ -1,0 +1,244 @@
+/*
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+*/
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #000000 url(images/img01.gif) repeat-x;
+	font: normal small Verdana, Arial, Helvetica, sans-serif;
+	color: #999999;
+}
+
+h1, h2, h3 {
+	margin-bottom: 20px;
+	text-transform: uppercase;
+	color: #FFFFFF;
+}
+
+h1 { font-size: 3em; }
+h2 { font-size: 2em; }
+h3 { font-size: 1.4em; }
+
+p, blockquote, ul, ol {
+	margin-bottom: 1.5em;
+	line-height: 1.8em;
+}
+
+blockquote, ul, ol {
+	margin-left: 3em;
+}
+
+blockquote {
+	margin-right: 3em;
+}
+
+a {
+	color: #23B9FF;
+}
+
+a:hover {
+	text-decoration: none;
+	color: #CC0000;
+}
+
+img { border: none; }
+
+img.left {
+	float: left;
+	margin: 0 15px 15px 0;
+}
+
+img.right {
+	float: right;
+	margin: 0 15px 0 15px;
+}
+
+hr { display: none; }
+
+.hr {
+	height: 36px;
+	margin-bottom: 15px;
+	background: url(images/img06.gif) repeat-x left center;
+}
+
+/* Header */
+
+#header {
+	width: 760px;
+	height: 200px;
+	margin: 0 auto;
+}
+
+/* Logo */
+
+#logo {
+	float: left;
+}
+
+#logo h1 {
+	margin: 0;
+	padding-top: 80px;
+	font-size: 2.6em;
+	font-variant: small-caps;
+}
+
+#logo h2 {
+	padding-left: 6px;
+	font-size: 1em;
+}
+
+#logo a {
+	text-decoration: none;
+	color: #FFFFFF;
+}
+
+/* Menu */
+
+#menu {
+	float: right;
+}
+
+#menu ul {
+	margin: 0;
+	padding-top: 118px;
+	text-align: center;
+	list-style: none;
+}
+
+#menu li {
+	display: inline;
+}
+
+#menu a {
+	padding: 0 20px;
+	border-left: 1px solid #FFFFFF;
+	text-decoration: none;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+#menu a:hover {
+	color: #23B9FF;
+}
+
+#menu .first a {
+	border: none;
+}
+
+/* Page */
+
+#page {
+	width: 760px;
+	margin: 0 auto;
+}
+
+/* Content */
+
+#content {
+	float: right;
+	width: 500px;
+}
+
+#content h2 {
+	height: 20px;
+	margin: 0;
+	padding: 20px 0 0 20px;
+	background: url(images/img04.gif) repeat-x;
+	font-size: 12px;
+	color: #000000;
+}
+
+#content h3 {
+	text-transform: none;
+	font-size: 1em;
+}
+
+#content .content {
+	padding: 20px;
+}
+
+/* Sidebar */
+
+#sidebar {
+	float: left;
+	width: 240px;
+}
+
+#sidebar ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#sidebar li {
+	padding: 0 20px 20px 20px;
+	background: url(images/img06.gif) repeat-x;
+}
+
+#sidebar li ul {
+	list-style: disc inside;
+}
+
+#sidebar li li {
+	padding: 0;
+	background: none;
+}
+
+#sidebar dl {
+}
+
+#sidebar dt {
+	font-size: x-small;
+	font-weight: bold;
+}
+
+#sidebar dd {
+	margin-bottom: 15px;
+	line-height: normal;
+	font-size: x-small;
+}
+
+#sidebar ol {
+	margin: 0;
+	list-style-position: inside;
+}
+
+#sidebar h2 {
+	height: 25px;
+	padding: 15px 0 0 0;
+	font-size: 12px;
+	color: #000000;
+}
+
+#sidebar blockquote {
+	margin: 0;
+}
+
+#sidebar a {
+}
+
+/* Footer */
+
+#footer {
+	width: 720px;
+	margin: 0 auto;
+	padding: 10px 20px;
+	border-top: 1px solid #666666;
+	font-size: x-small;
+}
+
+#footer p {
+	margin: 0;
+	line-height: normal;
+	color: #999999;
+}
+
+#footer a {
+	color: #999999;
+}

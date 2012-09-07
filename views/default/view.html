@@ -1,0 +1,19 @@
+{{extend 'layout.html'}} 
+{{musics=musics}}
+<h4>Click on the song to play</h4>
+<table style="text-align:center">
+<th>Name</th><th>Artist</th><th>Album</th><th>Genre</th><th>Language</th><th>Rating</th>
+{{for music in musics:}}
+<tr>
+<td>{{=A(music.name, _href=URL(r=request, f='play', args=music.id))}}</td>
+<td>{{=music.artist}}</td>
+<td>{{=music.album}}</td>
+<td>{{=music.genre}}</td>
+<td>{{=music.language}}</td>
+<td>{{=music.rating}}</td>
+{{if auth.user.id==4:}}
+<td>{{=A('delete song',_href=URL(r=request, f='delete', args=music.id))}}</td>
+{{pass}} 
+</tr>
+{{pass}}
+</table>

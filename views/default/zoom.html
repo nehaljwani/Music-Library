@@ -1,0 +1,5 @@
+{{extend "layout.html"}}
+{{pic=pic}}
+{{for i in pic:}}
+<img src="/{{if i.pic:}}{{=request.application}}/default/download/{{=i.pic}}{{pass}}" , scalefit="1", width="100%" float="left"  />
+{{pass}}

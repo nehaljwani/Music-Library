@@ -1,0 +1,22 @@
+{{extend 'layout.html'}} 
+{{playlist=playlist}}
+{{music=music}}
+<h4>Playlist</h4>
+<blockquote>
+<table>
+{{for i in playlist:}}
+	<tr>
+	{{if i.User_id==auth.user.id :}}
+		{{for j in music:}}
+			{{if j.id==i.Song:}}
+				<td>{{=A(j.name, _href=URL(r=request, f='play', args=j.id))}}</td>
+			{{pass}}	
+		{{pass}}
+	{{pass}}	
+	</tr>	
+{{pass}}
+<table>
+</blockquote>
+<br /><br />
+<h4>Add more songs to the playlist<h4>
+{{=form}}

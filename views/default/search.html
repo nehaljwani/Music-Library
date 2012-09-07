@@ -1,0 +1,55 @@
+{{extend 'layout.html'}}
+
+<style type="text/css">
+        div.auto_complete {
+          position:absolute;
+          width:250px;
+          background-color:white;
+          border:1px solid #888;
+          margin:0px;
+          padding:0px;
+        }
+        div.auto_complete ul {
+          border:1px solid #888;
+          margin:0;
+          padding:0;
+          width:100%;
+          list-style-type:none;
+        }
+        div.auto_complete ul li {
+          margin:0;
+          padding:3px;
+        }
+        div.auto_complete ul li.selected {
+          background-color: #ffb;
+        }
+        div.auto_complete ul strong.highlight {
+          color: #800;
+          margin:0;
+          padding:0;
+        }
+</style>
+<!--
+<input id="movie_name" name="movie[name]" size="30" type="text" /><div class="auto_complete" id="movie_name_auto_complete"></div>
+-->
+{{=form}}
+<!--<script type="text/javascript">
+//<![CDATA[
+var movie_name_auto_completer = new Ajax.Autocompleter('music_name', 'movie_name_auto_complete', '/{{=request.application}}/default/auto_complete_for_movie_name', {})
+//]]>
+</script>-->
+
+<br/><hr /><br /> 
+{{if musics:}}
+    <table>
+        {{for music in musics:}}
+            <tr>
+              	{{=A(music.name, _href=URL(r=request, f='play', args=music.id))}}<br /> 
+                <!--td><b>{{=music.name}}</b></td-->
+            </tr>
+        {{pass}}
+    <table>
+{{pass}}
+<br/>
+<br/>
+<br/>

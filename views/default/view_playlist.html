@@ -1,0 +1,9 @@
+{{extend 'layout.html'}} 
+{{comments=comments}}
+{{=auth.user.id}}
+{{for i in comments:}}
+	
+	<!--{{if (i.User_id==auth.user.id):}}-->
+			<p>yes</p><br />
+{{pass}}
+

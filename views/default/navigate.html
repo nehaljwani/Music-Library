@@ -1,0 +1,17 @@
+{{extend 'layout.html'}}
+<ul>
+            			<li><a href="/music_library/default/view">{{=T('View All Songs')}}</a></li>
+	    			<li><a href="/music_library/default/add">{{=T('Add Songs')}}</a></li>
+	    			<li><a href="/music_library/default/user_set">{{=T('User Settings')}}</a></li>
+	    			<li><a href="/music_library/default/comment">{{=T('Comment on a Song')}}</a></li>
+	    			<li><a href="/music_library/default/view_comment">{{=T('View All Comments')}}</a></li>
+	    			<li><a href="/music_library/default/playlist">{{=T('View Playlist')}}</a></li>
+	    			<!--li><a href="/music_library/default/view_playlist">{{=T('View Playlist')}}</a></li-->
+	    			<li><a href="/music_library/default/abuse">{{=T('Report Abuse')}}</a></li>
+	    			<li><a href="/music_library/default/forum">{{=T('Forum')}}</a></li>
+				{{if auth.user.id==4:}}
+	    				<li><a href="/music_library/default/users">{{=T('Users List')}}</a></li>
+	    				<li><a href="/music_library/default/rep_abuse">{{=T('List reported songs')}}</a></li>
+				{{pass}}
+
+</ul>

@@ -1,0 +1,19 @@
+{{extend 'layout.html'}} 
+{{musics=musics}}
+{{music=music}}
+<table>
+{{for i in music:}}
+	<tr>
+	
+		{{for j in musics:}}
+			{{if j.id==i.song:}}
+				<td>{{=A(j.name, _href=URL(r=request, f='play', args=j.id))}}</td>
+				<td>{{=i.User}}</td>
+				<td>{{=A('delete song',_href=URL(r=request, f='delete', args=j.id))}}</td>
+				
+			{{pass}}	
+		{{pass}}
+		
+	</tr>	
+{{pass}}
+<table>

@@ -1,0 +1,553 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/pratyush/web2py/applications/music_library/controllers/default.py'
+p4
+sS'code'
+p5
+S'def index():#no explicit use, redirects to homepage or login page whichever is suitable\n   \treturn dict(message=T(\'\'))\n\n#@auth.requires_login()\ndef user():\n    return dict(form=auth()) \t\n#provides login and defines class user, with limited access and authority.\n#type of user extrapolates on the kind of access offered to the person logged in.\n\t#for example a normal user has access to basic functions in the website, end user interface based.\n \t#user has access to \n\t# 1. View all songs.\n\t# 2. Add songs.    \n\t# 3. User Settings.\n\t# 4. Comment on a song.\n\t# 5. View all comments.\n\t# 6. View playlist.\n\t# 7. Report Abuse.\n\t# 8. Forum.\t    \n\ndef download():\n#for providing download of files\n    import os\n    filename=os.path.join(request.folder,\'uploads/\',\'%s\' % request.args[0])\n    return response.stream(open(filename,\'rb\'))\n\t# allows for direct download of song if the user likes it.\n\t# download request is preceded by disclaimer which encourages user to buy and promote the music if he/she likes it.\t\n\ndef play(): \n    #function aids in playing of the audio file.\n    musics=db(request.args(0)==db.music.id).select(db.music.ALL)\n    #musics=db().select(db.music.ALL, orderby=db.music.name)\n    return dict(musics=musics)\n\n@auth.requires_login()\t\ndef navigate():\n#provides smooth navigation\n    return dict()\n\n@auth.requires_membership(\'Admin\')\ndef rep_abuse():\n    music=db().select(db.abuse.ALL, orderby=db.abuse.song)\n    musics=db().select(db.music.ALL, orderby=db.music.name)\n    return dict(musics=musics,music=music)\n\t\n\n@auth.requires_login()\ndef home():\n    #homepage\n    form = SQLFORM(db.picture)\n    if form.accepts(request.vars):\n        response.flash = \'Success!\'\n    elif form.errors:\n        response.flash = \'Error adding new picture\'\n    \n    pics=db().select(db.picture.ALL, orderby=db.picture.use)\n    musics=db().select(db.music.ALL, orderby=db.music.name)\n    return dict(pics=pics,musics=musics,form=form)\n    #allows user to go to the home page.\t\n\n@auth.requires_login()\ndef add():\n    #function provides the upload of songs\n    #record= db.music(request.args(0)) or redirect(URL(\'index\'))\n    #url=URL(\'download\')\n    form = SQLFORM(db.music)\n    if form.accepts(request.vars):\n        response.flash = \'Success!\'\n    elif form.errors:\n        response.flash = \'Error adding new music\'\n    \n    return dict(form=form)\n\n@auth.requires_login()\ndef add_pic():\n    #function provides the upload of songs\n    #record= db.music(request.args(0)) or redirect(URL(\'index\'))\n    #url=URL(\'download\')\n    form = SQLFORM(db.picture)\n    if form.accepts(request.vars):\n        response.flash = \'Success!\'\n    elif form.errors:\n        response.flash = \'Error adding new music\'\n    return dict(form=form)\n\n@auth.requires_membership(\'Admin\')\t\n#defines user with administrative capabilities.\ndef delete():\n    #provides for deletion of songs\n    db(db.music.id==request.args(0)).delete()\n    redirect(URL(r=request, f="view"))\n\t\t# The admin has got extra rights and exclusive access to special features not availabe to the common end user.\n\t     \t# 1. Users List\n\t      \t# 2. List of Reported Songs.\n\n\n@auth.requires_membership(\'Admin\') \n#allows the admin to delete other users at his/her discretion. \ndef delete_user(): \n    #the delete user function.   \n    db(db.auth_user.id==request.args(0)).delete()\n    redirect(URL(r=request, f="users"))\n\t\t#the admin may be required to delete a user because of illicit activities or excessive misuse of the facilities provided.\n\n@auth.requires_login()  \n#shows the list of registered users to the current user(with admin privileges) logged in.\t\ndef users(): \n    users=db().select(db.auth_user.ALL, orderby=db.auth_user.id)\n    return dict(users=users)\n\t#the above fuction returns a comprehensive list of users to the admin who has logged in.\n\t#this ensures transparency and prevents anonymous users from availing of the facility.\t\n \n\n@auth.requires_login()\ndef view():\n    #function to view all the songs in the  database\n    musics=db().select(db.music.ALL, orderby=db.music.name)\n    return dict(musics=musics)\n\t#the above function gives a comprehensive list of all the songs in the music database.\t    \n\t#this allows the user to have a view of the entire database at once.\n\t#eases navigation of songs and allows for downloading and sampling of good content all at once.\t\t\n\n\n\ndef search():    \n    #function to search songs \n    name=TD(\'Search music name:\') \n    #asks for name of song title\n    namebox=TD(INPUT(_id=\'music_name\',_name=\'music[name]\',_size=\'30\',_type=\'text\',requires=IS_NOT_EMPTY()),DIV(_class=\'auto_complete\',_id=\'music_name_auto_complete\'))   \n    submit=TD(INPUT(_type=\'submit\',_name=\'submit\',_value=\'Submit\'))\n\n    form=FORM(TABLE(TR(name,namebox,submit)))\n\n    musics=None\n\n    if form.accepts(request.vars,session): \n        search=request.vars[\'music[name]\'] \n        #searches for the requested song amongst those in the database\n        musics=db(db.music.name.upper().like(\'%\'+search.upper()+\'%\')).select(db.music.ALL)\n    \n\n    return dict(form=form,musics=musics)\n    #returns a list of favourable matches from the collection.\n\n@auth.requires_login()\ndef user_set():\n    return dict()\n\n@auth.requires_login()\t\ndef comment():\n    db.comment.user.default = auth.user.id\n    #db.comment.user.default = db.comment.user.writable = False\n    t=request.args(0)\n    form  = SQLFORM(db.comment)\n    if form.accepts(request.vars):\n\t\tresponse.flash= \'comment added\'\n\t\tredirect(URL(r=request, f="comment"))\n    return dict(form=form)\n\t#allows the user to comment on a particular song.\n\t#flashes "comment added" prompt when a comment is added successfully.\n\n\n@auth.requires_login()\ndef view_comment():\n    #function to view all the comments made on all songs in the  database\n    musics=db().select(db.music.ALL, orderby=db.music.id)\n    users=db().select(db.auth_user.ALL, orderby=db.auth_user.id)\n    comments=db().select(db.comment.ALL, orderby=db.comment.comment)\n    return dict(comments=comments,musics=musics,users=users)\n\t#returns a title wise description of comments made by all users.\n   \n@auth.requires_login()\ndef playlist():\n    #function to show playlist of the user who has logged in.\n    music=db().select(db.music.ALL, orderby=db.music.id)\n    playlist=db().select(db.playlist.ALL, orderby=db.playlist.User_id)\n    db.playlist.User_id.default = auth.user.id\n    #db.playlist.User_id.default = db.playlist.User_id.writable = False\n    t=request.args(0)\n    form  = SQLFORM(db.playlist)\n    if form.accepts(request.vars):\n\t\tresponse.flash= \'Song added\'\n                #flashes \'song added\' prompt when a particular song is successfully added to the user\'s playlist.\n\t\tredirect(URL(r=request, f="playlist"))\n    return dict(form=form,playlist=playlist,music=music)\n\t#above function allows addition of songs to a playlist.\t\n\t#ensures smooth customisation of the playlist for the current user.\n\n@auth.requires_login()\ndef view_playlist():\n    #function to view all the songs in the playlist of the particular user.\n    comments=db().select(db.playlist.ALL, orderby=db.playlist.Song)\n    return dict(comments=comments)\n\n@auth.requires_login()\ndef abuse():\n    #allows a user to report abuse, either in form of obscene lyrics or explicit content.\n    db.abuse.User.default = auth.user.id\n    #db.abuse.User.default = db.abuse.User.writable = False\n    t=request.args(0)\n    form  = SQLFORM(db.abuse)\n    #registers the song in .abuse database which can be later referred.\n    if form.accepts(request.vars):\n\t\tresponse.flash= \'reported abuse\' \n                #flashes a \'reported abuse\' prompt on successful submission of abuse report.\n\t\tredirect(URL(r=request, f="navigate"))\n    return dict(form=form)\n    #the above function directs a list of reported songs to the admin which can be later viewed when a person is logged in as administrator.\t\n\n@auth.requires_login()\t\ndef forum():\n    users=db().select(db.auth_user.ALL, orderby=db.auth_user.id)\n    comments=db().select(db.forum.ALL, orderby=db.forum.Comment)\n    db.forum.Users.default = auth.user.id\n    #db.forum.Users.default = db.forum.Users.writable = False\n    t=request.args(0)\n    form  = SQLFORM(db.forum)\n    if form.accepts(request.vars):\n\t\tresponse.flash= \'comment added\' \n                #flashes \'comment added\' prompt on successful posting of query in forum.\n\t\tredirect(URL(r=request, f="forum"))\n    return dict(form=form, comments=comments,users=users)\n    #the above function allows for the creation of a forum where users with similar concerns and questions can ask the admin.\n    #here the users can also discuss amongst themselves and suggest improvements to the website or the quality of content added.\n    #the forum is a great addition to the already existing options for open criticism.\n\n@auth.requires_login()\t\ndef profile():\n    users=db(request.args(0)==db.auth_user.id).select(db.auth_user.ALL)\n    pics=db().select(db.picture.ALL, orderby=db.picture.use)\n    #musics=db().select(db.music.ALL, orderby=db.music.name)\n    return dict(users=users,pics=pics)\n    """the function above shows the profile of the users who are there in the database """\n\nresponse._vars=response._caller(download)\n'
+p6
+sS'snapshot'
+p7
+(dp8
+S'exception'
+p9
+(dp10
+S'__getslice__'
+p11
+S"<method-wrapper '__getslice__' of exceptions.IOError object>"
+p12
+sS'__str__'
+p13
+S"<method-wrapper '__str__' of exceptions.IOError object>"
+p14
+sS'__reduce__'
+p15
+S'<built-in method __reduce__ of exceptions.IOError object>'
+p16
+sS'__dict__'
+p17
+S'{}'
+p18
+sS'__sizeof__'
+p19
+S'<built-in method __sizeof__ of exceptions.IOError object>'
+p20
+sS'__init__'
+p21
+S"<method-wrapper '__init__' of exceptions.IOError object>"
+p22
+sS'__setattr__'
+p23
+S"<method-wrapper '__setattr__' of exceptions.IOError object>"
+p24
+sS'__reduce_ex__'
+p25
+S'<built-in method __reduce_ex__ of exceptions.IOError object>'
+p26
+sS'__new__'
+p27
+S'<built-in method __new__ of type object>'
+p28
+sS'errno'
+p29
+S'2'
+sS'__format__'
+p30
+S'<built-in method __format__ of exceptions.IOError object>'
+p31
+sS'__class__'
+p32
+S"<type 'exceptions.IOError'>"
+p33
+sS'filename'
+p34
+S"'/home/pratyush/web2py/applications/music_library...02d204361726e6976616c206f6620527573742e6d7033.mp3'"
+p35
+sS'__doc__'
+p36
+S"'I/O operation failed.'"
+p37
+sS'__getitem__'
+p38
+S"<method-wrapper '__getitem__' of exceptions.IOError object>"
+p39
+sS'__setstate__'
+p40
+S'<built-in method __setstate__ of exceptions.IOError object>'
+p41
+sS'__getattribute__'
+p42
+S"<method-wrapper '__getattribute__' of exceptions.IOError object>"
+p43
+sS'args'
+p44
+S"(2, 'No such file or directory')"
+p45
+sS'__subclasshook__'
+p46
+S'<built-in method __subclasshook__ of type object>'
+p47
+sS'__unicode__'
+p48
+S'<built-in method __unicode__ of exceptions.IOError object>'
+p49
+sS'strerror'
+p50
+S"'No such file or directory'"
+p51
+sS'__delattr__'
+p52
+S"<method-wrapper '__delattr__' of exceptions.IOError object>"
+p53
+sS'__repr__'
+p54
+S"<method-wrapper '__repr__' of exceptions.IOError object>"
+p55
+sS'__hash__'
+p56
+S"<method-wrapper '__hash__' of exceptions.IOError object>"
+p57
+ssS'evalue'
+p58
+S"[Errno 2] No such file or directory: '/home/pratyush/web2py/applications/music_library/uploads/music.song.8112649449c113d0.3031202d20506f657473206f66207468652046616c6c202d204361726e6976616c206f6620527573742e6d7033.mp3'"
+p59
+sS'request'
+p60
+(dp61
+S'function'
+p62
+S"'download'"
+p63
+sS'body'
+p64
+S'<cStringIO.StringO object>'
+p65
+sS'wsgi'
+p66
+S"<Storage {'start_response': <function <lambda> a...>, 'HTTP_ACCEPT_ENCODING': 'gzip,deflate,sdch'}}>"
+p67
+sS'extension'
+p68
+S"'html'"
+p69
+sS'vars'
+p70
+S'<Storage {}>'
+p71
+sS'cid'
+p72
+S'None'
+p73
+sS'url'
+p74
+S'<gluon.html.XML object>'
+p75
+sg44
+S"['music.song.8112649449c113d0.3031202d20506f6574...d204361726e6976616c206f6620527573742e6d7033.mp3']"
+p76
+sS'controller'
+p77
+S"'default'"
+p78
+sS'cookies'
+p79
+S"<SimpleCookie: session_id_admin='10-1-40-99-3c51...10-1-40-99-1949e7f0-9fdb-45c5-b7b9-edb2a212ecc9'>"
+p80
+sS'application'
+p81
+S"'music_library'"
+p82
+sS'ajax'
+p83
+S'False'
+p84
+sS'client'
+p85
+S"'10.1.40.99'"
+p86
+sS'env'
+p87
+S"<Storage {'http_user_agent': 'Mozilla/5.0 (Windo...ch', 'query_string': '', 'wsgi_run_once': False}>"
+p88
+sS'raw_args'
+p89
+S"'music.song.8112649449c113d0.3031202d20506f657473...02d204361726e6976616c206f6620527573742e6d7033.mp3'"
+p90
+sS'get_vars'
+p91
+S'<Storage {}>'
+p92
+sS'folder'
+p93
+S"'/home/pratyush/web2py/applications/music_library/'"
+p94
+sS'now'
+p95
+S'datetime.datetime(2011, 3, 20, 15, 36, 31, 764477)'
+p96
+sS'post_vars'
+p97
+S'<Storage {}>'
+p98
+ssS'frames'
+p99
+(lp100
+(dp101
+S'file'
+p102
+S'/home/pratyush/web2py/gluon/restricted.py'
+p103
+sS'dump'
+p104
+(dp105
+S'environment'
+p106
+S"{'A': <class 'gluon.html.A'>, 'Auth': <class 'gluon.tools.Auth'>, 'B': <class 'gluon.html.B'>, 'BEAUTIFY': <class 'gluon.html.BEAUTIFY'>, 'BODY': <class 'gluon.html.BODY'>, 'BR': <class 'gluon.html.BR'>, 'CENTER': <class 'gluon.html.CENTER'>, 'CLEANUP': <class 'gluon.validators.CLEANUP'>, 'CODE': <class 'gluon.html.CODE'>, 'CRYPT': <class 'gluon.validators.CRYPT'>, ...}"
+p107
+sS'ccode'
+p108
+S'<code object <module> at 0x906f6e0, file "/home/...ns/music_library/controllers/default.py", line 1>'
+p109
+ssS'lnum'
+p110
+I188
+sS'lines'
+p111
+(dp112
+I192
+S'        # XXX Show exception in Wing IDE if running in debugger'
+p113
+sI183
+S'        if type(code) == types.CodeType:'
+p114
+sI184
+S'            ccode = code'
+p115
+sI185
+S'        else:'
+p116
+sI186
+S'            ccode = compile2(code,layer)'
+p117
+sI187
+S''
+sI188
+S'        exec ccode in environment'
+p118
+sI189
+S'    except HTTP:'
+p119
+sI190
+S'        raise'
+p120
+sI191
+S'    except Exception:'
+p121
+ssS'call'
+p122
+S'(code=\'def index():#no explicit use, redirects to homep...e """\\n\\nresponse._vars=response._caller(download)\\n\', environment={\'A\': <class \'gluon.html.A\'>, \'Auth\': <class \'gluon.tools.Auth\'>, \'B\': <class \'gluon.html.B\'>, \'BEAUTIFY\': <class \'gluon.html.BEAUTIFY\'>, \'BODY\': <class \'gluon.html.BODY\'>, \'BR\': <class \'gluon.html.BR\'>, \'CENTER\': <class \'gluon.html.CENTER\'>, \'CLEANUP\': <class \'gluon.validators.CLEANUP\'>, \'CODE\': <class \'gluon.html.CODE\'>, \'CRYPT\': <class \'gluon.validators.CRYPT\'>, ...}, layer=\'/home/pratyush/web2py/applications/music_library/controllers/default.py\')'
+p123
+sS'func'
+p124
+S'restricted'
+p125
+sa(dp126
+g102
+S'/home/pratyush/web2py/applications/music_library/controllers/default.py'
+p127
+sg104
+(dp128
+sg110
+I234
+sg111
+(dp129
+I224
+S'    #the forum is a great addition to the already existing options for open criticism.'
+p130
+sI225
+S''
+sI226
+S'@auth.requires_login()'
+p131
+sI227
+S'def profile():'
+p132
+sI228
+S'    users=db(request.args(0)==db.auth_user.id).select(db.auth_user.ALL)'
+p133
+sI229
+S'    pics=db().select(db.picture.ALL, orderby=db.picture.use)'
+p134
+sI230
+S'    #musics=db().select(db.music.ALL, orderby=db.music.name)'
+p135
+sI231
+S'    return dict(users=users,pics=pics)'
+p136
+sI232
+S'    """the function above shows the profile of the users who are there in the database """'
+p137
+sI223
+S'    #here the users can also discuss amongst themselves and suggest improvements to the website or the quality of content added.'
+p138
+ssg122
+S'()'
+p139
+sg124
+S'<module>'
+p140
+sa(dp141
+g102
+S'/home/pratyush/web2py/gluon/globals.py'
+p142
+sg104
+(dp143
+S'self'
+p144
+S'undefined'
+p145
+sS'f'
+S'<function download>'
+p146
+ssg110
+I96
+sg111
+(dp147
+I96
+S'        self._caller = lambda f: f()'
+p148
+sI97
+S'        self._view_environment = None'
+p149
+sI98
+S'        self._custom_commit = None'
+p150
+sI99
+S'        self._custom_rollback = None'
+p151
+sI100
+S''
+sI91
+S"        self.flash = ''           # used by the default view layout"
+p152
+sI92
+S'        self.meta = Storage()     # used by web2py_ajax.html'
+p153
+sI93
+S'        self.menu = []            # used by the default view layout'
+p154
+sI94
+S'        self.files = []           # used by web2py_ajax.html'
+p155
+sI95
+S'        self._vars = None'
+p156
+ssg122
+S'(f=<function download>)'
+p157
+sg124
+S'<lambda>'
+p158
+sa(dp159
+g102
+S'/home/pratyush/web2py/applications/music_library/controllers/default.py'
+p160
+sg104
+(dp161
+S'builtinopen'
+p162
+S'<built-in function open>'
+p163
+sS'global response'
+p164
+S"<Storage {'body': <cStringIO.StringO object at 0... at 0x90648b4>, 'view': 'default/download.html'}>"
+p165
+sS'response.stream'
+p166
+S"<bound method Response.stream of <Storage {'body...at 0x90648b4>, 'view': 'default/download.html'}>>"
+p167
+sS'filename'
+p168
+S"'/home/pratyush/web2py/applications/music_library...02d204361726e6976616c206f6620527573742e6d7033.mp3'"
+p169
+ssg110
+I24
+sg111
+(dp170
+I19
+S''
+sI20
+S'def download():'
+p171
+sI21
+S'#for providing download of files'
+p172
+sI22
+S'    import os'
+p173
+sI23
+S"    filename=os.path.join(request.folder,'uploads/','%s' % request.args[0])"
+p174
+sI24
+S"    return response.stream(open(filename,'rb'))"
+p175
+sI25
+S'\t# allows for direct download of song if the user likes it.'
+p176
+sI26
+S'\t# download request is preceded by disclaimer which encourages user to buy and promote the music if he/she likes it.'
+p177
+sI27
+S''
+sI28
+S'def play():'
+p178
+ssg122
+S'()'
+p179
+sg124
+S'download'
+p180
+sasS'pyver'
+p181
+S'Python 2.6.6: /usr/bin/python'
+p182
+sS'session'
+p183
+(dp184
+S'flash'
+p185
+S'None'
+p186
+sS'_formkey[default]'
+p187
+S"'c25d384d-d5ac-4df9-9afc-b5fb02f344e8'"
+p188
+sS'auth'
+p189
+S"<Storage {'expiration': 3600, 'last_visit': date...'email': 'abhijat.sharma@students.iiit.ac.in'}>}>"
+p190
+sS'_formkey[login]'
+p191
+S"'1afac9a3-a697-466c-bc62-32ea2101d959'"
+p192
+sS'_formkey[register]'
+p193
+S"'5d93dc6e-4bea-432d-8df9-59a90baf077b'"
+p194
+ssS'etype'
+p195
+S"<type 'exceptions.IOError'>"
+p196
+sS'date'
+p197
+S'Sun Mar 20 15:36:31 2011'
+p198
+sS'response'
+p199
+(dp200
+S'_vars'
+p201
+S'None'
+p202
+sg79
+S"<SimpleCookie: session_id_music_library='10-1-40-99-1949e7f0-9fdb-45c5-b7b9-edb2a212ecc9'>"
+p203
+sS'subtitle'
+p204
+S"<lazyT 'customize me!'>"
+p205
+sS'meta'
+p206
+S'<Storage {}>'
+p207
+sS'_view_environment'
+p208
+S"{'A': <class 'gluon.html.A'>, 'Auth': <class 'gluon.tools.Auth'>, 'B': <class 'gluon.html.B'>, 'BEAUTIFY': <class 'gluon.html.BEAUTIFY'>, 'BODY': <class 'gluon.html.BODY'>, 'BR': <class 'gluon.html.BR'>, 'CENTER': <class 'gluon.html.CENTER'>, 'CLEANUP': <class 'gluon.validators.CLEANUP'>, 'CODE': <class 'gluon.html.CODE'>, 'CRYPT': <class 'gluon.validators.CRYPT'>, ...}"
+p209
+sS'files'
+p210
+S'[]'
+p211
+sS'title'
+p212
+S"'music_library'"
+p213
+sS'_caller'
+p214
+S'<function <lambda>>'
+p215
+sS'flash'
+p216
+S"''"
+p217
+sS'session_id_name'
+p218
+S"'session_id_music_library'"
+p219
+sS'_custom_commit'
+p220
+S'None'
+p221
+sS'session_filename'
+p222
+S"'/home/pratyush/web2py/applications/music_library...s/10-1-40-99-1949e7f0-9fdb-45c5-b7b9-edb2a212ecc9'"
+p223
+sS'menu_edit'
+p224
+S"[[<lazyT 'Edit'>, False, <gluon.html.XML object>, [[<lazyT 'Controller'>, False, <gluon.html.XML object>], [<lazyT 'View'>, False, <gluon.html.XML object>], [<lazyT 'Layout'>, False, <gluon.html.XML object>], [<lazyT 'Stylesheet'>, False, <gluon.html.XML object>], [<lazyT 'DB Model'>, False, <gluon.html.XML object>], [<lazyT 'Menu Model'>, False, <gluon.html.XML object>], [<lazyT 'Database'>, False, <gluon.html.XML object>]]]]"
+p225
+sg64
+S'<cStringIO.StringO object>'
+p226
+sS'session_file'
+p227
+S"<open file '/home/pratyush/web2py/applications/m...949e7f0-9fdb-45c5-b7b9-edb2a212ecc9', mode 'rb+'>"
+p228
+sS'_custom_rollback'
+p229
+S'None'
+p230
+sS'session_id'
+p231
+S"'10-1-40-99-1949e7f0-9fdb-45c5-b7b9-edb2a212ecc9'"
+p232
+sS'headers'
+p233
+S"<Storage {'Expires': 'Sun, 20 Mar 2011 10:06:31 ...he, must-revalidate, post-check=0, pre-check=0'}>"
+p234
+sS'status'
+p235
+S'200'
+p236
+sS'postprocessing'
+p237
+S'[]'
+p238
+sS'menu'
+p239
+S"[[<lazyT 'Index'>, False, <gluon.html.XML object>, []]]"
+p240
+sS'view'
+p241
+S"'default/download.html'"
+p242
+ssS'locals'
+p243
+(dp244
+S'os'
+p245
+S"<module 'os' from '/usr/lib/python2.6/os.pyc'>"
+p246
+sg34
+S"'/home/pratyush/web2py/applications/music_library...02d204361726e6976616c206f6620527573742e6d7033.mp3'"
+p247
+sssS'traceback'
+p248
+S'Traceback (most recent call last):\n  File "/home/pratyush/web2py/gluon/restricted.py", line 188, in restricted\n    exec ccode in environment\n  File "/home/pratyush/web2py/applications/music_library/controllers/default.py", line 234, in <module>\n  File "/home/pratyush/web2py/gluon/globals.py", line 96, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/pratyush/web2py/applications/music_library/controllers/default.py", line 24, in download\n    return response.stream(open(filename,\'rb\'))\nIOError: [Errno 2] No such file or directory: \'/home/pratyush/web2py/applications/music_library/uploads/music.song.8112649449c113d0.3031202d20506f657473206f66207468652046616c6c202d204361726e6976616c206f6620527573742e6d7033.mp3\'\n'
+p249
+s.

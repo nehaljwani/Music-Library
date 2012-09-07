@@ -1,0 +1,122 @@
+timestamp: 2010-08-17T19:55:08.742488
+CREATE TABLE auth_user(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name CHAR(128),
+    last_name CHAR(128),
+    email CHAR(512),
+    password CHAR(512),
+    registration_key CHAR(512),
+    reset_password_key CHAR(512)
+);
+success!
+timestamp: 2010-08-17T19:55:08.747074
+CREATE TABLE auth_group(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    role CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2010-08-17T19:55:08.750324
+CREATE TABLE auth_membership(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id REFERENCES auth_user(id) ON DELETE CASCADE,
+    group_id REFERENCES auth_group(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2010-08-17T19:55:08.754420
+CREATE TABLE auth_permission(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id REFERENCES auth_group(id) ON DELETE CASCADE,
+    name CHAR(512),
+    table_name CHAR(512),
+    record_id INTEGER
+);
+success!
+timestamp: 2010-08-17T19:55:08.762926
+CREATE TABLE auth_event(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_stamp TIMESTAMP,
+    client_ip CHAR(512),
+    user_id REFERENCES auth_user(id) ON DELETE CASCADE,
+    origin CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2010-08-17T19:59:45.284719
+CREATE TABLE music(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512),
+    genre TEXT,
+    artist TEXT,
+    album TEXT,
+    song CHAR(512)
+);
+success!
+timestamp: 2010-08-17T20:01:11.080247
+CREATE TABLE musicrate(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    musicid REFERENCES music(id) ON DELETE CASCADE,
+    rate INTEGER
+);
+success!
+timestamp: 2010-08-17T22:58:47.457478
+ALTER TABLE music ADD rating CHAR(512);
+timestamp: 2010-08-17T22:58:47.460206
+ALTER TABLE music ADD language CHAR(512);
+timestamp: 2010-08-18T10:20:22.774160
+CREATE TABLE test(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    rating INTEGER
+);
+success!
+timestamp: 2010-10-02T13:14:36.971957
+CREATE TABLE comment(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    comment TEXT,
+    user REFERENCES auth_user(id) ON DELETE CASCADE,
+    music REFERENCES music(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2010-10-02T14:25:31.657302
+CREATE TABLE playlist(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Playlist CHAR(512),
+    Song REFERENCES music(id) ON DELETE CASCADE,
+    User_id REFERENCES auth_user(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2010-10-02T14:27:52.595755
+ALTER TABLE playlist ADD user REFERENCES auth_user(id) ON DELETE CASCADE;
+timestamp: 2010-10-02T14:27:52.630830
+ALTER TABLE playlist ADD playlist CHAR(512);
+timestamp: 2010-10-02T14:30:46.972514
+ALTER TABLE playlist ADD user REFERENCES auth_user(id) ON DELETE CASCADE;
+timestamp: 2010-10-02T14:31:19.639474
+ALTER TABLE playlist ADD User REFERENCES auth_user(id) ON DELETE CASCADE;
+timestamp: 2010-10-02T14:32:14.642714
+ALTER TABLE playlist ADD song REFERENCES music(id) ON DELETE CASCADE;
+timestamp: 2010-10-02T15:04:28.381454
+CREATE TABLE abuse(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    song REFERENCES music(id) ON DELETE CASCADE,
+    User REFERENCES auth_user(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2010-10-02T15:36:21.808458
+CREATE TABLE forum(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Comment TEXT,
+    user REFERENCES auth_user(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2010-10-02T15:50:44.795692
+ALTER TABLE forum ADD User REFERENCES auth_user(id) ON DELETE CASCADE;
+timestamp: 2010-10-02T15:52:09.564735
+ALTER TABLE forum ADD Users REFERENCES auth_user(id) ON DELETE CASCADE;
+timestamp: 2010-10-20T10:46:43.918418
+CREATE TABLE picture(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pic CHAR(512),
+    use REFERENCES auth_user(id) ON DELETE CASCADE
+);
+success!

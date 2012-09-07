@@ -1,0 +1,17 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/pratyush/web2py/applications/music_library/models/db.py'
+p4
+sS'code'
+p5
+S"if request.env.web2py_runtime_gae:            # if running on Google App Engine\n    db = DAL('gae')                           # connect to Google BigTable\n    session.connect(request, response, db=db) # and store sessions and tickets there\nelse:                                         # else use a normal relational database\n    db = DAL('sqlite://storage.sqlite')       # if not, use SQLite or other DB\nfrom gluon.tools import *\nauth=Auth(globals(),db)                      # authentication/authorization\nauth.settings.hmac_key='sha512:40b75704-2d17-4fe6-9e58-2d33a13a5d59'\nauth.define_tables()                         # creates all needed tables\ncrud=Crud(globals(),db)                      # for CRUD helpers using auth\nservice=Service(globals())                   # for json, xml, jsonrpc, xmlrpc, amfrpc\n\n\n\ndb.define_table('music',\n                SQLField('name'),\n                SQLField('genre', 'text'),\n\t        SQLField('artist','text'),\n     \t\tSQLField('album','text'),\n                SQLField('song', 'upload'))\n                \ndb.music.name.requires=[IS_NOT_EMPTY(),IS_NOT_IN_DB(db,db.music.name)]\ndb.music.song.requires=[IS_NOT_EMPTY(),IS_NOT_IN_DB(db,db.music.song)]\n\ndb.define_table('musicrate',\n                SQLField('userid', db.user),\n                SQLField('musicid', db.music),\n                SQLField('rate', 'integer'))\n\n"
+p6
+sS'traceback'
+p7
+S'Traceback (most recent call last):\n  File "/home/pratyush/web2py/gluon/restricted.py", line 173, in restricted\n    exec ccode in environment\n  File "/home/pratyush/web2py/applications/music_library/models/db.py", line 26, in <module>\n    SQLField(\'userid\', db.user),\n  File "/home/pratyush/web2py/gluon/sql.py", line 1295, in __getattr__\n    return dict.__getitem__(self,key)\nKeyError: \'user\'\n'
+p8
+s.

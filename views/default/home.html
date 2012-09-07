@@ -1,0 +1,14 @@
+{{extend 'layout.html'}}
+{{pics=pics}}
+{{form=form}}
+{{for i in pics:}}
+	{{if auth.user.id==i.use:}}
+		<img src="/{{if i.pic:}}{{=request.application}}/default/download/{{=i.pic}}{{else:}}{{=form}}{{pass}}" , scalefit="1", width="50%"  />
+		{{break}}
+	{{pass}}
+{{pass}}
+<h5>Latest Updates</h5><br />
+<ul>
+<li>New songs added</li>
+<li>Now add your own songs and advertise them on jukebox</li>
+</ul>

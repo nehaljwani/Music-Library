@@ -1,0 +1,17 @@
+{{extend 'layout.html'}} 
+{{musics=users}}
+
+<table style="text-align:center">
+<th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Delete User</th>
+{{for music in musics:}}
+<tr>
+<td>{{=music.id}}</td>
+<td>{{=A(music.first_name, _href=URL(r=request, f='profile', args=music.id))}}</td>
+<td>{{=music.last_name}}</td>
+<td>{{=music.email}}</td>
+{{if music.id!=4:}}
+<td>{{=A('delete user',_href=URL(r=request, f='delete_user', args=music.id))}}</td>
+{{pass}} 
+</tr>
+{{pass}}
+</table>

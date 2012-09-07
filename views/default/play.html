@@ -1,0 +1,8 @@
+{{extend 'layout.html'}}
+{{for music in musics:}}
+	<EMBED src="/{{=request.application}}/default/download/{{=music.song}}" autostart=true><NOEMBED><BGSOUND src="/{{=request.application}}/uploads/{{=music.song}}"></NOEMBED><br />
+<br />
+	<p><b>{{=music.name}}</b> by <b>{{=music.artist}}</b> from the album <b>{{=music.album}}</b><br />Rated <b>{{=music.rating}}/5 </b></p>	
+	<h5>Right Click <a href="/{{=request.application}}/default/download/{{=music.song}}">here</a> and click on 'Save Link As' to download this song</h5>
+{{break}}
+{{pass}}

@@ -1,0 +1,15 @@
+{{extend 'layout.html'}} 
+{{musics=comments}}
+{{users=users}}
+<p style="text-align:center">
+{{for music in musics:}}
+	{{for i in users:}}
+			{{if i.id==music.Users:}}
+				{{=A(i.first_name, _href=URL(r=request, f='profile', args=i.id))}} says:<br />
+				{{=music.Comment}}<br /><br />
+			{{pass}}
+<!--td>{{=A('delete song',_href=URL(r=request, f='delete', args=music.id))}}</td "opens only at the time of maintainence"-->
+ 	{{pass}}
+{{pass}}
+{{=form}}
+</p>

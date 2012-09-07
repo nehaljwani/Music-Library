@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="keywords" content="{{=response.keywords}}" />
+<meta name="description" content="{{=response.description}}" />
+<title>{{if response.title:}}{{=response.title}}{{else:}}{{=URL(r=request)}}{{pass}}</title>
+<link rel="stylesheet" href="/{{=request.application}}/static/css/styles.css" type="text/css" />
+<link rel="stylesheet" href="/{{=request.application}}/static/css/common.css" type="text/css" />
+<link rel="stylesheet" href="/{{=request.application}}/static/css/lightbox.css" media="screen,projection"  type="text/css"/>
+
+<script type="text/javascript" src="/{{=request.application}}/static/js/prototype.js"></script>
+<script type="text/javascript" src="/{{=request.application}}/static/js/scriptaculous.js"></script>
+<script type="text/javascript" src="/{{=request.application}}/static/js/effects.js"></script>
+<script type="text/javascript" src="/{{=request.application}}/static/js/dragdrop.js"></script>
+<script type="text/javascript" src="/{{=request.application}}/static/js/controls.js"></script>
+
+<script type="text/javascript" src="/{{=request.application}}/static/js/lightbox.js"></script>
+
+
+{{include 'web2py_ajax.html'}}
+</head>
+<body onload="{{if response.flash:}}fade('flash',0.1);{{pass}}">
+<div id="container">
+  <div id="header">
+    <h1><span class="o">Movie</span><span class="db">Rate</span></h1>
+    <h2>Share your thoughts!</h2>
+  </div>
+
+{{if response.menu:}}
+   <div id="nav">
+   <ul>
+    {{for _name,_active,_link in response.menu:}}
+    <li><a href="{{=_link}}" {{if _active:}}class="active"{{pass}}>{{=_name}}</a></li>
+    {{pass}}
+   </ul>
+   </div>
+{{pass}}
+
+  <div>
+    <br/>
+    <br/>
+    <div>
+        {{if response.flash:}}
+            <div id="flash">{{=response.flash}}</div>
+        {{pass}}
+        {{include}}
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

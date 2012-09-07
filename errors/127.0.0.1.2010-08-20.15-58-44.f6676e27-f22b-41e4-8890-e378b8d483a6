@@ -1,0 +1,17 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/pratyush/web2py/applications/music_library/views/default/user_set.html'
+p4
+sS'code'
+p5
+S"response.write('',escape=False)\nextends 'layout.html'\nresponse.write('\\n',escape=False)\nif 'auth' in globals():\n    response.write(' [ ',escape=False)\n    if not auth.user:\n        response.write(' ',escape=False)\n        response.write(T('login'))\n        response.write(' | ',escape=False)\n        response.write(T('register'))\n        response.write(' | \\n ',escape=False)\n    else:\n        response.write(' [welcome ',escape=False)\n        response.write(auth.user.first_name)\n        response.write(' | ',escape=False)\n        response.write(T('change password'))\n        response.write(' | ',escape=False)\n        response.write(T('edit profile'))\n        response.write('| ',escape=False)\n        response.write(T('logout'))\n        response.write('|\\n ',escape=False)\n        pass\n    response.write(' ]\\n ',escape=False)\n    pass\nresponse.write(' \\n',escape=False)"
+p6
+sS'traceback'
+p7
+S'Traceback (most recent call last):\n  File "/home/pratyush/web2py/gluon/restricted.py", line 171, in restricted\n    ccode = compile(code.replace(\'\\r\\n\', \'\\n\'), layer, \'exec\')\n  File "/home/pratyush/web2py/applications/music_library/views/default/user_set.html", line 2\n    extends \'layout.html\'\n                        ^\nSyntaxError: invalid syntax\n'
+p8
+s.

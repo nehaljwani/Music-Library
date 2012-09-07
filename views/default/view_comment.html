@@ -1,0 +1,24 @@
+{{extend 'layout.html'}} 
+{{musics=musics}}
+{{users=users}}
+{{comments=comments}}
+<table>
+{{for i in comments:}}
+	<tr>
+	{{for j in users:}}
+		{{if(j.id==i.user):}}
+			<td>
+				{{=A(j.first_name, _href=URL(r=request, f='profile', args=i.id))}} commented about the song: 	
+			{{for k in musics:}}
+				{{if(k.id==i.music):}}
+					{{=A(k.name, _href=URL(r=request, f='play', args=k.id))}}
+					<br />
+					<blockquote>{{=i.comment}}</blockquote>
+					</td>
+				{{pass}}
+			{{pass}}
+		{{pass}}
+	{{pass}}
+	<tr>
+{{pass}}
+</table>

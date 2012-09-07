@@ -1,0 +1,14 @@
+{{extend 'layout.html'}}
+{{users=users}}
+{{pics=pics}}
+{{for user in users:}}
+{{for i in pics:}}
+	{{if user.id==i.use:}}
+		<img src="/{{if i.pic:}}{{=request.application}}/default/download/{{=i.pic}}{{pass}}" , scalefit="1", width="50%" float="left"  />
+			
+	{{pass}}
+{{pass}}
+	<h3>{{=user.first_name}} {{=user.last_name}}</h3>
+	<p>email:{{=user.email}}</p>	
+{{break}}
+{{pass}}
